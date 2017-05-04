@@ -1,7 +1,7 @@
 import os
 import pickle
 import sys
-import dataset_map_entry as me
+import dataset.dataset_map_entry as me
 
 def load_dataset():
     input_dataset = open(os.path.join(os.path.dirname(__file__), './output/map_final.pkl'), 'rb')
