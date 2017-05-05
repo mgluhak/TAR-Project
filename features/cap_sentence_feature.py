@@ -1,4 +1,4 @@
-from Feature import Feature
+from feature import Feature
 
 import pickle
 import sys
@@ -20,7 +20,7 @@ class CapSentenceFeature(Feature):
         for tweet in tweets:
             for word in tweet:
                 #skip tweet handles punctuation and hashtags
-                if(word.isalpha()):
+                if(word.isalpha() and word != "NUMBER" and word!= "URL"):
                     if word[0].isupper():
                         capital_count+=1
                     break
@@ -34,3 +34,4 @@ for user in data:
     CSF.extract_feature(user, data[user].get_tweets())
 
 print(CSF.retrieve('36b2593435e1bed13eb138c1973c13ed'))
+print(data['36b2593435e1bed13eb138c1973c13ed'].get_tweets())

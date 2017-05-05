@@ -1,4 +1,4 @@
-from Feature import Feature
+from feature import Feature
 
 import pickle
 import sys
@@ -20,7 +20,7 @@ class CapWordsFeature(Feature):
         for tweet in tweets:
             capital_count = 0.0
             for word in tweet:
-                if(word.isalpha()):
+                if(word.isalpha() and word != "NUMBER" and word != "URL"):
                     if word[0].isupper():
                         capital_count+=1
             length = len(tweet)
@@ -35,5 +35,4 @@ CWF = CapWordsFeature()
 for user in data:
     CWF.extract_feature(user, data[user].get_tweets())
 
-print(CWF.retrieve('36b2593435e1bed13eb138c1973c13ed'))
-
+print(CWF.map)
