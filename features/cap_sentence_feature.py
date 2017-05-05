@@ -1,13 +1,8 @@
-from feature import Feature
+from features.feature import Feature
+import dataset.dataset_reader as dr
 
-import pickle
-import sys
-sys.path.insert(1, '../dataset')
-import dataset_reader as dr
 
 class CapSentenceFeature(Feature):
-
-
 
     def extract_feature(self, user, tweets):
         tweet_count = len(tweets)
@@ -20,12 +15,12 @@ class CapSentenceFeature(Feature):
         for tweet in tweets:
             for word in tweet:
                 #skip tweet handles punctuation and hashtags
-                if(word.isalpha() and word != "NUMBER" and word!= "URL"):
+                if word.isalpha() and word != "NUMBER" and word != "URL":
                     if word[0].isupper():
-                        capital_count+=1
+                        capital_count += 1
                     break
 
-        self.map[user] = capital_count/tweet_count
+        self.map[user] = capital_count / tweet_count
 
 
 data = dr.load_dataset()

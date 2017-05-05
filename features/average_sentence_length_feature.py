@@ -1,13 +1,8 @@
-from feature import Feature
+from features.feature import Feature
+import dataset.dataset_reader as dr
 
-import pickle
-import sys
-sys.path.insert(1, '../dataset')
-import dataset_reader as dr
 
 class AverageSentenceLengthFeature(Feature):
-
-
 
     def extract_feature(self, user, tweets):
         
@@ -18,7 +13,7 @@ class AverageSentenceLengthFeature(Feature):
 
         sentence_lengths = 0.0
         for tweet in tweets:
-            sentence_lengths+=len(tweet)
+            sentence_lengths += len(tweet)
 
         self.map[user] = sentence_lengths/tweet_count
 

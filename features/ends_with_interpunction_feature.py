@@ -1,13 +1,8 @@
-from feature import Feature
+from features.feature import Feature
+import dataset.dataset_reader as dr
 
-import pickle
-import sys
-sys.path.insert(1, '../dataset')
-import dataset_reader as dr
 
 class EndsWithInterpunctionFeature(Feature):
-
-
 
     def extract_feature(self, user, tweets):
         
@@ -18,14 +13,13 @@ class EndsWithInterpunctionFeature(Feature):
 
         interpuncted_tweets = 0.0
         for tweet in tweets:
-            if(len(tweet)==0):
+            if len(tweet) == 0:
                 continue
             final_token = tweet[-1]
-            if(final_token == "?" or final_token == "." or final_token == "!"):
-                interpuncted_tweets+=1.0
+            if final_token == "?" or final_token == "." or final_token == "!":
+                interpuncted_tweets += 1.0
 
-
-        self.map[user] = interpuncted_tweets/tweet_count
+        self.map[user] = interpuncted_tweets / tweet_count
 
 
 data = dr.load_dataset()

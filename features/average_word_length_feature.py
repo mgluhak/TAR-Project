@@ -1,13 +1,8 @@
-from feature import Feature
+from features.feature import Feature
+import dataset.dataset_reader as dr
 
-import pickle
-import sys
-sys.path.insert(1, '../dataset')
-import dataset_reader as dr
 
 class AverageWordLengthFeature(Feature):
-
-
 
     def extract_feature(self, user, tweets):
         
@@ -17,18 +12,18 @@ class AverageWordLengthFeature(Feature):
             return
 
         word_lengths = 0.0
-        word_count = 0
+        word_count = 0.0
         for tweet in tweets:
             for word in tweet:
-                if(word.isalpha() and word != "NUMBER" and word != "URL"):
-                    word_lengths+=len(word)
-                    word_count+=1
+                if word.isalpha() and word != "NUMBER" and word != "URL":
+                    word_lengths += len(word)
+                    word_count += 1
 
-        if(word_count==0):
+        if word_count == 0:
             self.map[user] = 0
             return
 
-        self.map[user] = word_lengths/word_count
+        self.map[user] = word_lengths / word_count
 
 
 data = dr.load_dataset()
