@@ -8,7 +8,6 @@ class FeatureWithStorage(Feature):
         self.store_file = store_file
         self.base_feature = base_feature
         self.base_feature_name = type(base_feature).__name__
-        self.predicted = None
         self.extract_history = self.load_extract_history()
 
     def load_extract_history(self):
