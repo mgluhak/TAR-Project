@@ -1,34 +1,29 @@
 import os
-import pickle
 import enchant
 import dataset.dataset_reader as dr
+from features.feature import Feature
+from features.feature_storage import FeatureWithStorage
 from Levenshtein.StringMatcher import StringMatcher
 
 # Levensthein word distance ratio threshold
 WORD_DIST_RATIO = 0.6
+BRANDS_FILE = './additional/brands.txt'
 
 
-class OutOfDictWordsFeature:
+class OutOfDictWordsFeature(Feature):
     def __init__(self):
-        self.map = None
         self.brands = None
         self.dir = os.path.dirname(__file__)
-        self.load_files()
         # dictionary with english words
         self.d = enchant.Dict("en_US")
-        # dictionary with spanish words (because they may occurr in english tweets)
+        # dictionary with spanish words (because they may occur in english tweets)
         self.d_sp = enchant.Dict("es")
         # Tool for calculating Levenshtein word distance
         self.sm = StringMatcher()
-
-    def load_files(self):
-        input_file = open(os.path.join(self.dir, './pkls/out_of_dict_map.pkl'), 'rb')
-        self.map = pickle.load(input_file)
-        input_file.close()
         # load brands
-        self.brands = set(line.lower().strip() for line in open(os.path.join(self.dir, './extraction/brands.txt')))
+        self.brands = set(line.lower().strip() for line in open(os.path.join(self.dir, BRANDS_FILE)))
 
-    def extract_out_of_dict_word_ratio(self, user, tweets):
+    def extract_feature(self, user_id, tweets):
         # List with out of dictionary words
         out_of_dict_words = set()
         # List with words in dictionary
@@ -50,20 +45,14 @@ class OutOfDictWordsFeature:
                         in_dict_words.add(word)
                 else:
                     in_dict_words.add(word)
-        self.map[user] = (len(out_of_dict_words), len(out_of_dict_words) + len(in_dict_words))
+        return len(out_of_dict_words), len(out_of_dict_words) + len(in_dict_words)
 
-    def retrieve(self, user_id, tweets=None):
-        if (user_id in self.map) and tweets is not None:
-            self.extract_out_of_dict_word_ratio(user_id, tweets)
-            return self.map[user_id]
-        elif user_id in self.map:
-            return self.map[user_id]
-        else:
-            raise ValueError("User with given id does not exist!")
 
 tweets = dr.load_dataset()
-odwf = OutOfDictWordsFeature()
+o1 = OutOfDictWordsFeature()
+print(type(o1).__name__)
+odwf = FeatureWithStorage(OutOfDictWordsFeature(), 'abc.shelve')
 for user in tweets:
     print(user)
-    print(odwf.retrieve('36b2593435e1bed13eb138c1973c13ed'))
+    print(odwf.extract_feature('36b2593435e1bed13eb138c1973c13ed', tweets['36b2593435e1bed13eb138c1973c13ed'].tweets))
     break
