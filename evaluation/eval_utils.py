@@ -1,4 +1,3 @@
-import numpy as np
 import os
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
@@ -6,21 +5,22 @@ from sklearn.metrics import precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import StratifiedKFold
 import pickle
+import dataset.dataset_reader as dr
+import numpy as np
 
-
-# def evaluate(pipeline, parameters, X, y, k1=10, k2=3):
-# accuracy, precision, recall, f1 = nested_kfold_cv(pipeline, parameters, X, y, k1=k1, k2=k2)
-# print(accuracy)
-# print(precision)
-# print(recall)
-# print(f1)
-# print("accuracy,precisionMacro,recallMacro,f1Macro")
-# print(np.average(accuracy), np.average(precision), np.average(recall), np.average(f1))
+def print_evaluation_results(pipeline, parameters, X, y, k1=10, k2=3):
+    accuracy, precision, recall, f1 = nested_k_fold_cv(pipeline, parameters, X, y, k1=k1, k2=k2)
+    # print(accuracy)
+    # print(precision)
+    # print(recall)
+    # print(f1)
+    print("accuracy,precisionMacro,recallMacro,f1Macro")
+    print(np.average(accuracy), np.average(precision), np.average(recall), np.average(f1))
 
 
 def nested_k_fold_cv(clf, param_grid, X, y, k1=10, k2=3):
     # kf1 = KFold(n_splits=k1)
-    kf1 = StratifiedKFold(n_splits=k1)
+    kf1 = StratifiedKFold(n_splits=k1,random_state=42)
 
     accuracy = []
     precision = []
@@ -32,14 +32,14 @@ def nested_k_fold_cv(clf, param_grid, X, y, k1=10, k2=3):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
+        print("iteration = " + str(counter) + "/" + str(k1))  # DEBUG
+        counter += 1
+
         gs = GridSearchCV(clf, param_grid, cv=k2, n_jobs=1)
         gs.fit(X_train, y_train)
 
         # print gs.best_estimator_
         y_predicted = gs.predict(X_test)
-
-        print("iteration = " + str(counter) + "/" + str(k1))  # DEBUG
-        counter += 1
 
         accuracy.append(accuracy_score(y_test, y_predicted))
         precision.append(precision_score(y_test, y_predicted, average="macro"))
@@ -68,3 +68,18 @@ def store_result(results, store_file, label='Both'):
     output_results = open(store_file, 'wb')
     pickle.dump(result_map, output_results)
     output_results.close()
+
+def getAllFeatures(featureGenerators,dataset):
+
+    features = []
+
+    for user in dataset:
+        #print (user)
+        tweets = dataset[user].get_tweets()
+        userFeatures = []
+        for featureGenerator in featureGenerators:
+            userFeatures.append(featureGenerator.extract_feature(user,tweets))
+        features.append(userFeatures)
+    #features = np.array(features)
+    #print (features)
+    return np.array(features)

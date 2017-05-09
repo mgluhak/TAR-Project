@@ -4,16 +4,15 @@ from evaluation.eval_utils import store_result
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+from sklearn import preprocessing
+import numpy as np
 
 # custom spliter used instead of a tokenizer, since the tweets are already tokenized
 def spaceSplitter(list):
     return list.split(" ")
 
 
-# clasification - possible modes - age, gender, both
-def evaluate(classification="both"):
-    dataset = dr.load_dataset()
+def getFeatures(dataset,classification="both"):
 
     documents = []
     y = []
@@ -41,8 +40,13 @@ def evaluate(classification="both"):
     vectorizer.fit(documents)
 
     features = vectorizer.transform(documents)
+    return features,y
 
-    from sklearn import preprocessing
+# clasification - possible modes - age, gender, both
+def evaluate(classification="both"):
+    dataset = dr.load_dataset()
+    features,y = getFeatures(dataset,classification)
+
     encoder = preprocessing.LabelEncoder()
     encoder.fit(y)
 
@@ -57,7 +61,7 @@ def evaluate(classification="both"):
     pipeline = Pipeline([('svc', clfSVM)])
 
     ## K- fold validation
-    return nested_k_fold_cv(pipeline, param_grid, features, yLabel, k1=10, k2=3)
+    return nested_k_fold_cv(pipeline, param_grid, features, yLabel, k1=5, k2=3)
 
 
 # evaluation results
@@ -73,4 +77,7 @@ def evaluate(classification="both"):
 # age & gender
 # accuracy,precisionMacro,recallMacro,f1Macro
 # 0.318092414832 0.237126847568 0.22628968254 0.213770186078
-store_result((evaluate("gender")), 'results/svm_6_5_2017.pkl', "Gender only")
+
+store_result((evaluate("gender")), 'results/baseline_9_5_2017.pkl', "Gender only")
+store_result((evaluate("age")), 'results/baseline_9_5_2017.pkl', "Age only")
+store_result((evaluate("both")), 'results/baseline_9_5_2017.pkl', "Both")
