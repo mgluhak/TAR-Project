@@ -93,9 +93,10 @@ def getAllFeatures(featureGenerators,dataset):
     #features = np.array(features)
     #print (features)
     features = np.array(features)
-    normed_features = features / features.max(axis=0)
+    #normed_features = features / features.max(axis=0)
     #normed_features = (features - features.min(0)) / features.ptp(0)
-    return normed_features
+    return features
+    #return normed_features
 
 from features.average_sentence_length_feature import AverageSentenceLengthFeature
 from features.average_word_length_feature import AverageWordLengthFeature
