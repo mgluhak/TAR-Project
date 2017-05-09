@@ -23,9 +23,9 @@ class CapSentenceFeature(Feature):
         #self.map[user] = capital_count / tweet_count
         return capital_count / tweet_count
 
-data = dr.load_dataset()
-CSF = CapSentenceFeature()
-print(CSF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#CSF = CapSentenceFeature()
+#print(CSF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
 #for user in data:
 #    CSF.extract_feature(user, data[user].get_tweets())
 

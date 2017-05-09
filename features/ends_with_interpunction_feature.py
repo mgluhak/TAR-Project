@@ -25,9 +25,9 @@ class EndsWithInterpunctionFeature(Feature):
         return interpuncted_tweets / tweet_count
 
 
-data = dr.load_dataset()
-EWF = FeatureWithStorage(EndsWithInterpunctionFeature(), 'abc.shelve')
-print(EWF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#EWF = FeatureWithStorage(EndsWithInterpunctionFeature(), 'abc.shelve')
+#print(EWF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
 #for user in data:
 #    EWF.extract_feature(user, data[user].get_tweets())
 

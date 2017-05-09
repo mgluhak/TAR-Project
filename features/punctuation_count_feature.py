@@ -43,12 +43,14 @@ class PunctuationCountFeature(Feature):
 
         total_counts /= tweet_count
         # self.map[user] = dict(zip(self.punc_marks, total_counts))
-        return dict(zip(self.punc_marks, total_counts))
+
+        #return dict(zip(self.punc_marks, total_counts))
+        return total_counts
 
 
-data = dr.load_dataset()
-PCF = FeatureWithStorage(PunctuationCountFeature(), 'abc.shelve')
-print(PCF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#PCF = FeatureWithStorage(PunctuationCountFeature(), 'abc.shelve')
+#print(PCF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
 #for user in data:
 #    PCF.extract_feature(user, data[user].get_tweets())
 #    break

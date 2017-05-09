@@ -26,9 +26,9 @@ class AverageWordLengthFeature(Feature):
         return word_lengths / word_count
 
 
-data = dr.load_dataset()
-AWLF = AverageWordLengthFeature()
-print(AWLF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#AWLF = AverageWordLengthFeature()
+#print(AWLF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
 #for user in data:
 #    AWLF.extract_feature(user, data[user].get_tweets())
 

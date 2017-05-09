@@ -32,9 +32,9 @@ class CapLettersFeature(Feature):
         return sum(tweet_list) / (len(tweet_list))
 
 
-data = dr.load_dataset()
-CLF = CapLettersFeature()
-print(CLF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#CLF = CapLettersFeature()
+#print(CLF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
 #for user in data:
 #    CLF.extract_feature(user, data[user].get_tweets())
 

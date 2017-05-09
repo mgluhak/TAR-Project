@@ -19,9 +19,9 @@ class AverageSentenceLengthFeature(Feature):
         return sentence_lengths / tweet_count
 
 
-data = dr.load_dataset()
-ASLF = AverageSentenceLengthFeature()
-print(ASLF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#ASLF = AverageSentenceLengthFeature()
+#print(ASLF.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
 #for user in data:
 #    ASLF.extract_feature(user, data[user].get_tweets())
 
