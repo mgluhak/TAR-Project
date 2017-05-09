@@ -6,6 +6,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import preprocessing
 import numpy as np
+import nltk
+from nltk.stem import WordNetLemmatizer
+from features.utility import penn_to_wn
+from nltk.stem import SnowballStemmer
 
 # custom spliter used instead of a tokenizer, since the tweets are already tokenized
 def spaceSplitter(list):
@@ -16,6 +20,9 @@ def getFeatures(dataset,classification="both"):
 
     documents = []
     y = []
+
+    lemmatizer = WordNetLemmatizer()
+    stemmer = SnowballStemmer('english')
 
     # joining tokens with whitespace in order to fit the tf-idf vectorizer
     for user in dataset:
@@ -31,7 +38,11 @@ def getFeatures(dataset,classification="both"):
 
         document = []
         for tweet in tweets:
-            document.append(" ".join(tweet))
+            #taggedTweet = nltk.pos_tag(tweet)
+            #lemmatizedTweet = map( lambda x : lemmatizer.lemmatize(x[0], penn_to_wn(x[1])) , taggedTweet)
+            stemmedTweet = map( lambda x : stemmer.stem(x) , tweet)
+            document.append(" ".join(stemmedTweet))
+            #document.append(" ".join(tweet))
         documents.append(" ".join(document))
 
     ## Definining tf-idf vector
@@ -46,6 +57,8 @@ def getFeatures(dataset,classification="both"):
 def evaluate(classification="both"):
     dataset = dr.load_dataset()
     features,y = getFeatures(dataset,classification)
+
+    print (features.shape)
 
     encoder = preprocessing.LabelEncoder()
     encoder.fit(y)
@@ -78,6 +91,6 @@ def evaluate(classification="both"):
 # accuracy,precisionMacro,recallMacro,f1Macro
 # 0.318092414832 0.237126847568 0.22628968254 0.213770186078
 
-store_result((evaluate("gender")), 'results/baseline_9_5_2017.pkl', "Gender only")
-store_result((evaluate("age")), 'results/baseline_9_5_2017.pkl', "Age only")
-store_result((evaluate("both")), 'results/baseline_9_5_2017.pkl', "Both")
+store_result((evaluate("gender")), 'results/baseline3_9_5_2017.pkl', "Gender only")
+store_result((evaluate("age")), 'results/baseline3_9_5_2017.pkl', "Age only")
+store_result((evaluate("both")), 'results/baseline3_9_5_2017.pkl', "Both")
