@@ -61,6 +61,7 @@ def evaluate(classification="both"):
 from evaluation.eval_utils import print_evaluation_results
 #print_evaluation_results()
 #evaluate("gender")
-store_result((evaluate("gender")), 'results/7_svm_9_5_2017.pkl', "Gender only")
-store_result((evaluate("age")), 'results/7_svm_9_5_2017.pkl', "Age only")
-store_result((evaluate("both")), 'results/7_svm_9_5_2017.pkl', "Both")
+
+# store_result((evaluate("gender")), 'results/model1_svm_9_5_2017.pkl', "Gender only")
+# store_result((evaluate("age")), 'results/model1_svm_9_5_2017.pkl', "Age only")
+# store_result((evaluate("both")), 'results/model1_svm_9_5_2017.pkl', "Both")

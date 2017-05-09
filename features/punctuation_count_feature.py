@@ -24,7 +24,8 @@ class PunctuationCountFeature(Feature):
         tweet_count = len(tweets)
         if tweet_count == 0:
             # self.map[user] = list(zip(self.punc_marks, np.zeros(6)))
-            return dict(zip(self.punc_marks, np.zeros(6)))
+            return np.zeros(6)
+            #return dict(zip(self.punc_marks, np.zeros(6)))
 
         total_counts = np.zeros(6)
         for tweet in tweets:

@@ -73,13 +73,43 @@ def getAllFeatures(featureGenerators,dataset):
 
     features = []
 
-    for user in dataset:
+    for user in sorted(dataset.keys()):
         #print (user)
         tweets = dataset[user].get_tweets()
         userFeatures = []
         for featureGenerator in featureGenerators:
-            userFeatures.append(featureGenerator.extract_feature(user,tweets))
+            extracted = featureGenerator.extract_feature(user,tweets)
+            if isinstance(extracted, np.ndarray):
+                #print (extracted)
+                userFeatures = userFeatures + extracted.tolist()
+            else:
+                userFeatures.append(extracted)
         features.append(userFeatures)
+        # if len(userFeatures) > 1:
+        #     print (userFeatures)
+        #     features = features + userFeatures.tolist()
+        # else:
+        #     features.append(userFeatures)
     #features = np.array(features)
     #print (features)
-    return np.array(features)
+    features = np.array(features)
+    normed_features = features / features.max(axis=0)
+    #normed_features = (features - features.min(0)) / features.ptp(0)
+    return normed_features
+
+from features.average_sentence_length_feature import AverageSentenceLengthFeature
+from features.average_word_length_feature import AverageWordLengthFeature
+from features.cap_sentence_feature import CapSentenceFeature
+from features.cap_letters_feature import CapLettersFeature
+from features.cap_words_feature import CapWordsFeature
+from features.ends_with_interpunction_feature import EndsWithInterpunctionFeature
+#from features.out_of_dict_words_feature import OutOfDictWordsFeature
+from features.punctuation_count_feature import PunctuationCountFeature
+
+#featureGenerators = [AverageSentenceLengthFeature(), AverageWordLengthFeature(), CapSentenceFeature()]
+
+# featureGenerators = [CapSentenceFeature(),CapLettersFeature(),CapWordsFeature(),EndsWithInterpunctionFeature(),PunctuationCountFeature()]
+#
+# dataset = dr.load_dataset()
+#
+# print (getAllFeatures(featureGenerators, dataset)[:50])

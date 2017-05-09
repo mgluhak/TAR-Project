@@ -25,7 +25,7 @@ def getFeatures(dataset,classification="both"):
     stemmer = SnowballStemmer('english')
 
     # joining tokens with whitespace in order to fit the tf-idf vectorizer
-    for user in dataset:
+    for user in sorted(dataset.keys()):
         tweets = dataset[user].get_tweets()
         if classification == "both":
             y.append(str(dataset[user].get_gender().value) + str(dataset[user].get_age_group().value))
@@ -91,6 +91,6 @@ def evaluate(classification="both"):
 # accuracy,precisionMacro,recallMacro,f1Macro
 # 0.318092414832 0.237126847568 0.22628968254 0.213770186078
 
-store_result((evaluate("gender")), 'results/baseline3_9_5_2017.pkl', "Gender only")
-store_result((evaluate("age")), 'results/baseline3_9_5_2017.pkl', "Age only")
-store_result((evaluate("both")), 'results/baseline3_9_5_2017.pkl', "Both")
+# store_result((evaluate("gender")), 'results/baseline3_9_5_2017.pkl', "Gender only")
+# store_result((evaluate("age")), 'results/baseline3_9_5_2017.pkl', "Age only")
+# store_result((evaluate("both")), 'results/baseline3_9_5_2017.pkl', "Both")
