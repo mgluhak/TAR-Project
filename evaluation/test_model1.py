@@ -1,15 +1,16 @@
 from sklearn import preprocessing
 import dataset.dataset_reader as dr
 from evaluation.eval_utils import nested_k_fold_cv
-from evaluation.eval_utils import store_result
+from evaluation.eval_utils import old_store_result
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn import preprocessing
 from evaluation.baseline1 import getFeatures
-from evaluation.eval_utils import getAllFeatures
+from evaluation.eval_utils import get_all_features
 import numpy as np
 from scipy import sparse
+
 
 def selectFeatures(dataset):
     from features.average_sentence_length_feature import AverageSentenceLengthFeature
@@ -21,25 +22,32 @@ def selectFeatures(dataset):
     from features.out_of_dict_words_feature import OutOfDictWordsFeature
     from features.punctuation_count_feature import PunctuationCountFeature
 
-    #featureGenerators = [AverageSentenceLengthFeature(), AverageWordLengthFeature(), CapSentenceFeature()]
+    # featureGenerators = [AverageSentenceLengthFeature(), AverageWordLengthFeature(), CapSentenceFeature()]
 
-    featureGenerators = [CapSentenceFeature(),CapLettersFeature(),CapWordsFeature(),EndsWithInterpunctionFeature(),PunctuationCountFeature()]
+    featureGenerators = [CapSentenceFeature(), CapLettersFeature(), CapWordsFeature(), EndsWithInterpunctionFeature(),
+                         PunctuationCountFeature()]
 
-    return getAllFeatures(featureGenerators, dataset)
+    return get_all_features(featureGenerators, dataset)
+
 
 # clasification - possible modes - age, gender, both
 def evaluate(classification="both"):
+    # 1. ucitavanje dataseta
     dataset = dr.load_dataset()
-    baselineFeatures,y = getFeatures(dataset,classification)
+    # 2. dohvacanje featura
+    baselineFeatures, y = getFeatures(dataset, classification)
+    # 3. dohvacanje ostalih featura
     otherFeatures = selectFeatures(dataset)
 
-    #print (baselineFeatures.shape, otherFeatures.shape)
+    # print (baselineFeatures.shape, otherFeatures.shape)
+    # 4. stackanje
     X = sparse.csr_matrix(sparse.hstack([sparse.csr_matrix(otherFeatures), baselineFeatures]))
-    #print (X.shape)
-    #X = np.hstack([baselineFeatures,otherFeatures])
-    #X = np.concatenate((baselineFeatures,otherFeatures),axis=1)
-    #print (X.shape)
+    # print (X.shape)
+    # X = np.hstack([baselineFeatures,otherFeatures])
+    # X = np.concatenate((baselineFeatures,otherFeatures),axis=1)
+    # print (X.shape)
 
+    # 5. encoding
     encoder = preprocessing.LabelEncoder()
     encoder.fit(y)
 
@@ -51,17 +59,18 @@ def evaluate(classification="both"):
     pot2 = map(pot2func, range(-5, 5))
     param_grid = {'svc__C': list(pot2)}
     clfSVM = LinearSVC()
-    #scaler = preprocessing.StandardScaler()
+    # scaler = preprocessing.StandardScaler()
     pipeline = Pipeline([('svc', clfSVM)])
 
     ## K- fold validation
-    #print_evaluation_results(pipeline, param_grid, X, yLabel, k1=5, k2=3)
+    # print_evaluation_results(pipeline, param_grid, X, yLabel, k1=5, k2=3)
     return nested_k_fold_cv(pipeline, param_grid, X, yLabel, k1=5, k2=3)
 
-from evaluation.eval_utils import print_evaluation_results
-#print_evaluation_results()
-#evaluate("gender")
 
-# store_result((evaluate("gender")), 'results/model1_svm_9_5_2017.pkl', "Gender only")
-# store_result((evaluate("age")), 'results/model1_svm_9_5_2017.pkl', "Age only")
-# store_result((evaluate("both")), 'results/model1_svm_9_5_2017.pkl', "Both")
+from evaluation.eval_utils import print_evaluation_results
+# print_evaluation_results()
+# evaluate("gender")
+
+#store_result((evaluate("gender")), 'results/model1_svm_26_5_2017.pkl', "Gender only")
+#store_result((evaluate("age")), 'results/model1_svm_26_5_2017.pkl', "Age only")
+old_store_result((evaluate("both")), 'results/model1_svm_26_5_2017.pkl', "Both")

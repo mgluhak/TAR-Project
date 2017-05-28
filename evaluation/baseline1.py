@@ -1,6 +1,7 @@
 import dataset.dataset_reader as dr
 from evaluation.eval_utils import nested_k_fold_cv
-from evaluation.eval_utils import store_result
+from evaluation.eval_utils import old_store_result
+from evaluation.eval_utils import get_documents_y
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -8,57 +9,33 @@ from sklearn import preprocessing
 import numpy as np
 import nltk
 from nltk.stem import WordNetLemmatizer
-from features.utility import penn_to_wn
 from nltk.stem import SnowballStemmer
+from features.utility import penn_to_wn
+
 
 # custom spliter used instead of a tokenizer, since the tweets are already tokenized
 def spaceSplitter(list):
     return list.split(" ")
 
 
-def getFeatures(dataset,classification="both"):
-
-    documents = []
-    y = []
-
-    lemmatizer = WordNetLemmatizer()
-    stemmer = SnowballStemmer('english')
-
-    # joining tokens with whitespace in order to fit the tf-idf vectorizer
-    for user in sorted(dataset.keys()):
-        tweets = dataset[user].get_tweets()
-        if classification == "both":
-            y.append(str(dataset[user].get_gender().value) + str(dataset[user].get_age_group().value))
-        elif classification == "gender":
-            y.append(str(dataset[user].get_gender().value))
-        elif classification == "age":
-            y.append(str(dataset[user].get_age_group().value))
-        else:
-            raise ValueError("Given clasification taks is not specified")
-
-        document = []
-        for tweet in tweets:
-            #taggedTweet = nltk.pos_tag(tweet)
-            #lemmatizedTweet = map( lambda x : lemmatizer.lemmatize(x[0], penn_to_wn(x[1])) , taggedTweet)
-            stemmedTweet = map( lambda x : stemmer.stem(x) , tweet)
-            document.append(" ".join(stemmedTweet))
-            #document.append(" ".join(tweet))
-        documents.append(" ".join(document))
+def getFeatures(dataset, classification="both"):
+    # 1. ucitavanje dataseta
+    documents, y = get_documents_y(dataset, classification)
 
     ## Definining tf-idf vector
-
     vectorizer = TfidfVectorizer(tokenizer=spaceSplitter)
     vectorizer.fit(documents)
 
     features = vectorizer.transform(documents)
-    return features,y
+    return features, y
+
 
 # clasification - possible modes - age, gender, both
 def evaluate(classification="both"):
     dataset = dr.load_dataset()
-    features,y = getFeatures(dataset,classification)
+    features, y = getFeatures(dataset, classification)
 
-    print (features.shape)
+    print(features.shape)
 
     encoder = preprocessing.LabelEncoder()
     encoder.fit(y)
@@ -77,20 +54,20 @@ def evaluate(classification="both"):
     return nested_k_fold_cv(pipeline, param_grid, features, yLabel, k1=5, k2=3)
 
 
-# evaluation results
+    # evaluation results
 
-# age only
-# accuracy,precisionMacro,recallMacro,f1Macro
-# 0.451974730696 0.217529421246 0.256729323308 0.216938342466
+    # age only
+    # accuracy,precisionMacro,recallMacro,f1Macro
+    # 0.451974730696 0.217529421246 0.256729323308 0.216938342466
 
-# gender only
-# accuracy,precisionMacro,recallMacro,f1Macro
-# 0.717965367965 0.720882394348 0.717965367965 0.717075870313
+    # gender only
+    # accuracy,precisionMacro,recallMacro,f1Macro
+    # 0.717965367965 0.720882394348 0.717965367965 0.717075870313
 
-# age & gender
-# accuracy,precisionMacro,recallMacro,f1Macro
-# 0.318092414832 0.237126847568 0.22628968254 0.213770186078
+    # age & gender
+    # accuracy,precisionMacro,recallMacro,f1Macro
+    # 0.318092414832 0.237126847568 0.22628968254 0.213770186078
 
-# store_result((evaluate("gender")), 'results/baseline3_9_5_2017.pkl', "Gender only")
-# store_result((evaluate("age")), 'results/baseline3_9_5_2017.pkl', "Age only")
-# store_result((evaluate("both")), 'results/baseline3_9_5_2017.pkl', "Both")
+    # store_result((evaluate("gender")), 'results/baseline3_9_5_2017.pkl', "Gender only")
+    # store_result((evaluate("age")), 'results/baseline3_9_5_2017.pkl', "Age only")
+    # store_result((evaluate("both")), 'results/baseline3_9_5_2017.pkl', "Both")
