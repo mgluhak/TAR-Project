@@ -17,11 +17,12 @@ from sklearn.svm import LinearSVC
 
 class StackingEvaluation(EvaluationSystem):
     def __init__(self, gender_stack=(MultinomialNB, BernoulliNB, LinearSVC, BayesianRidge), gender_meta=BernoulliNB,
-                 age_stack=(MultinomialNB, LogisticRegression, BernoulliNB, LinearSVC), age_meta=LinearSVC):
+                 age_stack=(MultinomialNB, LogisticRegression, BernoulliNB, LinearSVC), age_meta=LinearSVC, n_range=(1, 1)):
         self.gender_stack = gender_stack
         self.gender_meta = gender_meta
         self.age_stack = age_stack
         self.age_meta = age_meta
+        self.n_range = n_range
 
     @staticmethod
     def space_splitter(sentence):
@@ -31,7 +32,7 @@ class StackingEvaluation(EvaluationSystem):
         documents, y = get_documents_y(dataset, classification)
 
         ## Definining tf-idf vector
-        vectorizer = TfidfVectorizer(tokenizer=self.space_splitter)
+        vectorizer = TfidfVectorizer(ngram_range=self.n_range, tokenizer=self.space_splitter)
         vectorizer.fit(documents)
 
         features = vectorizer.transform(documents)
@@ -59,4 +60,5 @@ class StackingEvaluation(EvaluationSystem):
 
     @staticmethod
     def default_information_gain_reduce():
-        return ReductionWithStorage(InformationGainOld(1e-3), StackingEvaluation, 1e-3)
+        return ReductionWithStorage(base_reduction=InformationGainOld(1e-3), base_clf=StackingEvaluation,
+                                    threshold=1e-3)

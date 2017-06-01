@@ -3,7 +3,7 @@ from evaluation.eval_utils import load_intermediate_step
 
 
 class MetricsMap:
-    def __init__(self, path=None):
+    def __init__(self, path: str = None):
         if path is not None:
             self.result_map = load_intermediate_step(path)
         else:

@@ -15,7 +15,7 @@ class WordRichnessFeature(Feature):
             if word_map[key] == 1:
                 unique += 1
             total += 1
-        return unique, total
+        return unique / total
 
     def extract_feature(self, user_id, user_tweets):
         word_map = {}
@@ -28,6 +28,6 @@ class WordRichnessFeature(Feature):
                         word_map[word] = 1
         return self.calculate_uniqueness(word_map)
 
-data = dr.load_dataset()
-wrf = WordRichnessFeature()
-print(wrf.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))
+#data = dr.load_dataset()
+#wrf = WordRichnessFeature()
+#print(wrf.extract_feature('36b2593435e1bed13eb138c1973c13ed', data['36b2593435e1bed13eb138c1973c13ed'].tweets))

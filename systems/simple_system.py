@@ -13,8 +13,9 @@ from features.punctuation_count_feature import PunctuationCountFeature
 
 
 class SimpleEvaluation(EvaluationSystem):
-    def __init__(self, clf=('svc', LinearSVC())):
+    def __init__(self, clf=('svc', LinearSVC()), n_gram_range=(1, 1)):
         self.clf_ = clf
+        self.n_gram_range = n_gram_range
 
     @staticmethod
     def space_splitter(sentence):
@@ -24,7 +25,7 @@ class SimpleEvaluation(EvaluationSystem):
         documents, y = get_documents_y(dataset, classification)
 
         ## Definining tf-idf vector
-        vectorizer = TfidfVectorizer(tokenizer=self.space_splitter)
+        vectorizer = TfidfVectorizer(ngram_range=self.n_gram_range, tokenizer=self.space_splitter)
         vectorizer.fit(documents)
 
         features = vectorizer.transform(documents)

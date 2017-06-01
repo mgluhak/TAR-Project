@@ -10,7 +10,7 @@ class ReductionWithStorage(Reduction):
 
     def __init__(self, base_reduction, base_clf, threshold, count_nan=True, progress_bar=None, load_stored=True, store_new=True):
         super().__init__(threshold, count_nan, progress_bar)
-        self.base_reduction = self.base_reduction
+        self.base_reduction = base_reduction
         self.name = "{0}-{1}".format(str(type(base_reduction).__name__), str(type(base_clf).__name__))
         self.load_stored = load_stored
         self.store_new = store_new
@@ -19,7 +19,7 @@ class ReductionWithStorage(Reduction):
         if self.load_stored and os.path.exists(os.getcwd() + '/cache/' + self.name + '_features.pkl'):
             features = load_intermediate_step('cache/' + self.name + '_features.pkl')
         else:
-            features = self.reduce(features, y, names)
+            features = super().reduce(features, y, names)
             if self.store_new:
                 store_intermediate_step(features, 'cache/' + self.name + '_features.pkl')
 

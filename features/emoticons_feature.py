@@ -1,5 +1,6 @@
 from features.feature import Feature
 import dataset.dataset_reader as dr
+import numpy as np
 
 
 class EmoticonFeature(Feature):
@@ -38,7 +39,11 @@ class EmoticonFeature(Feature):
                 no_of_happy += 1 if self.is_happy_emoticon(token) else 0
                 no_of_emoticons += 1 if self.is_emoticon(token) else 0
                 no_of_tokens += 1
-        return no_of_noses, no_of_happy, no_of_reverse, no_of_emoticons, no_of_tokens
+        noses_feature = no_of_noses / no_of_emoticons
+        happy_feature = no_of_happy / no_of_emoticons
+        reverse_feature = no_of_reverse / no_of_emoticons
+        tokens_feature = no_of_emoticons / no_of_tokens
+        return np.array([noses_feature, happy_feature, reverse_feature, tokens_feature])
 
 
 data = dr.load_dataset()

@@ -8,31 +8,36 @@ class InformationGainOld(Reduction):
         super().__init__(threshold, count_nan, progress_bar)
 
     def function_abstract(self, X, y):
-        def _calIg():
+        def info_gain():
             entropy_x_set = 0
             entropy_x_not_set = 0
+
             for c in classCnt:
-                probs = classCnt[c] / float(featureTot)
-                entropy_x_set = entropy_x_set - probs * np.log(probs)
-                probs = (classTotCnt[c] - classCnt[c]) / float(tot - featureTot)
-                entropy_x_not_set = entropy_x_not_set - probs * np.log(probs)
-            for c in classTotCnt:
+                probas = classCnt[c] / float(featureTot)
+                entropy_x_set = entropy_x_set - probas * np.log(probas)
+                probas = (class_tot_cnt[c] - classCnt[c]) / float(tot - featureTot)
+                entropy_x_not_set = entropy_x_not_set - probas * np.log(probas)
+
+            for c in class_tot_cnt:
                 if c not in classCnt:
-                    probs = classTotCnt[c] / float(tot - featureTot)
-                    entropy_x_not_set = entropy_x_not_set - probs * np.log(probs)
+                    probas = class_tot_cnt[c] / float(tot - featureTot)
+                    entropy_x_not_set = entropy_x_not_set - probas * np.log(probas)
+
             return entropy_before - ((featureTot / float(tot)) * entropy_x_set
                                      + ((tot - featureTot) / float(tot)) * entropy_x_not_set)
 
         tot = X.shape[0]
-        classTotCnt = {}
+        class_tot_cnt = {}
         entropy_before = 0
+
         for i in y:
-            if i not in classTotCnt:
-                classTotCnt[i] = 1
+            if i not in class_tot_cnt:
+                class_tot_cnt[i] = 1
             else:
-                classTotCnt[i] = classTotCnt[i] + 1
-        for c in classTotCnt:
-            probs = classTotCnt[c] / float(tot)
+                class_tot_cnt[i] = class_tot_cnt[i] + 1
+
+        for c in class_tot_cnt:
+            probs = class_tot_cnt[c] / float(tot)
             entropy_before = entropy_before - probs * np.log(probs)
 
         nz = X.T.nonzero()
@@ -40,11 +45,12 @@ class InformationGainOld(Reduction):
         classCnt = {}
         featureTot = 0
         information_gain = []
+
         for i in range(0, len(nz[0])):
-            if (i != 0 and nz[0][i] != pre):
+            if i != 0 and nz[0][i] != pre:
                 for notappear in range(pre + 1, nz[0][i]):
                     information_gain.append(0)
-                ig = _calIg()
+                ig = info_gain()
                 information_gain.append(ig)
                 pre = nz[0][i]
                 classCnt = {}
@@ -55,7 +61,8 @@ class InformationGainOld(Reduction):
                 classCnt[yclass] = 1
             else:
                 classCnt[yclass] = classCnt[yclass] + 1
-        ig = _calIg()
+
+        ig = info_gain()
         information_gain.append(ig)
 
         return np.asarray(information_gain)

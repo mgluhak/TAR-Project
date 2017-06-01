@@ -24,26 +24,29 @@ class Word2VecEvaluation(EvaluationSystem):
         if self.pre_trained is None:
             data_path_name = 'dataset'
             data = documents
+
+            tok_corp = [nltk.word_tokenize(doc) for doc in data]
+            if os.path.exists('cache/' + str(data_path_name) + '_trained_model_' + str(classification) + '.pkl'):
+                model = gensim.models.Word2Vec.load(
+                    'cache/' + str(data_path_name) + '_trained_model_' + str(classification) + '.pkl')
+            else:
+                # model = gensim.models.Word2Vec(tok_corp, min_count=1, size=32)
+                model = gensim.models.Word2Vec(tok_corp, size=100, window=5, min_count=5)
+                model.save('cache/' + str(data_path_name) + '_trained_model_' + str(classification) + '.pkl')
         else:
             data_path_name = self.pre_trained[0]
-            data = gensim.models.Word2Vec.load_word2vec_format(self.pre_trained[1], binary=True)
+            model = gensim.models.Word2Vec.load_word2vec_format(self.pre_trained[1], binary=True)
 
-        tok_corp = [nltk.word_tokenize(doc) for doc in data]
-        if os.path.exists('cache/' + str(data_path_name) + '_trained_model_' + str(classification) + '.pkl'):
-            model = gensim.models.Word2Vec.load('cache/' + str(data_path_name) + '_trained_model_' + str(classification)+ '.pkl')
-        else:
-            # model = gensim.models.Word2Vec(tok_corp, min_count=1, size=32)
-            model = gensim.models.Word2Vec(tok_corp, size=100, window=5, min_count=5)
-            model.save('cache/' + str(data_path_name) + '_trained_model_' + str(classification) + '.pkl')
+
         print("w2v loaded...")
         w2v = dict(zip(model.wv.index2word, model.wv.syn0))
         # print("w2v")
 
         self.vectorizer = self.vectorizer_class(w2v)
 
-        self.vectorizer.fit(data, y)
+        self.vectorizer.fit(documents, y)
 
-        features = self.vectorizer.transform(X=data)
+        features = self.vectorizer.transform(X=documents)
 
         return features, y, None
 

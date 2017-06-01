@@ -10,8 +10,14 @@ import numpy as np
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import SnowballStemmer
-from features.utility import penn_to_wn
 
+from features.cap_letters_feature import CapLettersFeature
+from features.cap_sentence_feature import CapSentenceFeature
+from features.cap_words_feature import CapWordsFeature
+from features.ends_with_interpunction_feature import EndsWithInterpunctionFeature
+from features.punctuation_count_feature import PunctuationCountFeature
+from features.utility import penn_to_wn
+from evaluation.eval_utils import get_all_features
 
 # custom spliter used instead of a tokenizer, since the tweets are already tokenized
 def spaceSplitter(list):
@@ -71,3 +77,8 @@ def evaluate(classification="both"):
     # store_result((evaluate("gender")), 'results/baseline3_9_5_2017.pkl', "Gender only")
     # store_result((evaluate("age")), 'results/baseline3_9_5_2017.pkl', "Age only")
     # store_result((evaluate("both")), 'results/baseline3_9_5_2017.pkl', "Both")
+
+# proba
+# additional = [CapSentenceFeature(), CapLettersFeature(), CapWordsFeature(), EndsWithInterpunctionFeature(),
+#                 PunctuationCountFeature()]
+# print(get_all_features(additional, dr.load_dataset()))
