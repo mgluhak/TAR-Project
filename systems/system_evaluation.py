@@ -14,12 +14,27 @@ class EvaluationSystem:
     def get_features(self, dataset, classification):
         raise NotImplementedError("Please Implement this method")
 
-    def evaluate(self, dataset, validation, classification="both", additional_features=None, reduction=None, scl=None, pca=None):
+    def evaluate(self, dataset, validation, classification="both", additional_features=None, reduction=None, scl=None, pca=None,
+                 glove=None):
         X, y, names = self.get_features(dataset, classification)
 
         if additional_features is not None and len(additional_features) > 0:
             other_features = get_all_features(additional_features, dataset)
             X = sparse.csr_matrix(sparse.hstack([sparse.csr_matrix(other_features), X]))
+
+        if glove is not None:
+            glove_features = []
+            for user in sorted(dataset.keys()):
+                tweets = dataset[user].get_tweets()
+                if len(tweets) == 0:
+                    continue
+                glove_features.append(np.array(glove.extract_feature(user, tweets)))
+
+            glove_features = np.array(glove_features)
+            # print (w2v_features.shape)
+
+            #X = sparse.csr_matrix(sparse.hstack([sparse.csr_matrix(glove_features), X]))
+            X = sparse.hstack((X, sparse.csr_matrix(glove_features)), format='csr')
 
         if reduction is not None:
             X = reduction.reduce(features=X, y=y, names=names)

@@ -46,12 +46,15 @@ class OutOfDictWordsFeature(Feature):
                 else:
                     in_dict_words.add(word)
         #return len(out_of_dict_words), len(out_of_dict_words) + len(in_dict_words)
-        return len(out_of_dict_words) / (len(out_of_dict_words) + len(in_dict_words))
+        if len(out_of_dict_words) + len(in_dict_words) > 0:
+            return len(out_of_dict_words) / (len(out_of_dict_words) + len(in_dict_words))
+        else:
+            return 0
 
 #tweets = dr.load_dataset()
 #o1 = OutOfDictWordsFeature()
 #print(type(o1).__name__)
-odwf = FeatureWithStorage(OutOfDictWordsFeature(), 'abc.shelve')
+#odwf = FeatureWithStorage(OutOfDictWordsFeature(), 'abc.shelve')
 # for user in tweets:
 #     print(user)
 #     print(odwf.extract_feature('36b2593435e1bed13eb138c1973c13ed', tweets['36b2593435e1bed13eb138c1973c13ed'].tweets))

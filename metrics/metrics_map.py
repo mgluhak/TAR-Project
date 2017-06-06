@@ -10,9 +10,9 @@ class MetricsMap:
             self.result_map = {}
 
     def evaluate(self, dataset, system, validation, classification, additional_features=None, reduction=None, scl=None,
-                 pca=None):
+                 pca=None, glove=None):
         y_trues, y_predicted = system.evaluate(dataset, validation, classification, additional_features, reduction, scl,
-                                               pca)
+                                               pca, glove)
         self.result_map[classification] = (y_trues, y_predicted)
 
     def retrieve(self):

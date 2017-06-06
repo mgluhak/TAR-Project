@@ -3,11 +3,12 @@ from nltk.tag import pos_tag
 import nltk
 from nltk.corpus import wordnet as wn
 
+
 class POS_tagger:
     def __init__(self):
-        self.pos_tagger = pickle.load( open("pos_tagger.pkl","r") )
+        self.pos_tagger = pickle.load(open("cache/pos_tagger.pkl", "rb"))
 
-    def tag(self,tokens,tagger="TnT"):
+    def tag(self, tokens, tagger="TnT"):
         if tagger == "TnT":
             return self.pos_tagger.tag(tokens)
         elif tagger == "Perceptron":
@@ -15,7 +16,8 @@ class POS_tagger:
         else:
             raise ValueError("Tagger " + tagger + " is not supported")
 
-#taken from stackoverflow
+
+# taken from stackoverflow
 def is_noun(tag):
     return tag in ['NN', 'NNS', 'NNP', 'NNPS']
 
@@ -30,6 +32,7 @@ def is_adverb(tag):
 
 def is_adjective(tag):
     return tag in ['JJ', 'JJR', 'JJS']
+
 
 def penn_to_wn(tag):
     if is_adjective(tag):

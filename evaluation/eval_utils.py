@@ -8,6 +8,8 @@ from sklearn.model_selection import StratifiedKFold
 import pickle
 import nltk
 import dataset.dataset_reader as dr
+from features.feature_storage import FeatureWithStorage
+from features.pos_tags import PosTagFeature
 from features.utility import penn_to_wn
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import SnowballStemmer
@@ -183,6 +185,8 @@ def get_all_features(featureGenerators, dataset):
             if isinstance(extracted, np.ndarray):
                 # print (extracted)
                 userFeatures = userFeatures + extracted.tolist()
+            elif isinstance(extracted, list):
+                userFeatures = userFeatures + [elem for elem in extracted]
             else:
                 userFeatures.append(extracted)
         features.append(userFeatures)
@@ -216,3 +220,4 @@ from features.punctuation_count_feature import PunctuationCountFeature
 # dataset = dr.load_dataset()
 #
 # print (getAllFeatures(featureGenerators, dataset)[:50])
+#get_all_features([FeatureWithStorage(PosTagFeature(type="Perceptron"),'cache/pos2.shelve')], dr.load_dataset())

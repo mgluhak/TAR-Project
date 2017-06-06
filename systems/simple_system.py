@@ -1,6 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from evaluation.eval_utils import get_documents_y
+from features.glove_features import GloveFeatures
 from systems.system_evaluation import EvaluationSystem
 from features.average_sentence_length_feature import AverageSentenceLengthFeature
 from features.average_word_length_feature import AverageWordLengthFeature
@@ -10,6 +11,8 @@ from features.cap_words_feature import CapWordsFeature
 from features.ends_with_interpunction_feature import EndsWithInterpunctionFeature
 from features.out_of_dict_words_feature import OutOfDictWordsFeature
 from features.punctuation_count_feature import PunctuationCountFeature
+from features.feature_storage import FeatureWithStorage
+from features.pos_tags import PosTagFeature
 
 
 class SimpleEvaluation(EvaluationSystem):
@@ -43,4 +46,5 @@ class SimpleEvaluation(EvaluationSystem):
     @staticmethod
     def default_feature_set():
         return [CapSentenceFeature(), CapLettersFeature(), CapWordsFeature(), EndsWithInterpunctionFeature(),
-                PunctuationCountFeature()]
+                PunctuationCountFeature(), FeatureWithStorage(PosTagFeature(type="Perceptron"),'cache/pos2.shelve')]
+                #GloveFeatures()]

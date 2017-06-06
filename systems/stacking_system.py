@@ -35,7 +35,7 @@ class StackingEvaluation(EvaluationSystem):
         vectorizer = TfidfVectorizer(ngram_range=self.n_range, tokenizer=self.space_splitter)
         vectorizer.fit(documents)
 
-        features = vectorizer.transform(documents)
+        features = vectorizer.transform(documents).todense()
         names = vectorizer.get_feature_names()
 
         return features, y, names
